@@ -5,43 +5,16 @@
     xmlns:local="using:UWPTube"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vlc="using:VLC"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-        <vlc:MediaElement AreTransportControlsEnabled="True" HardwareAcceleration="True" x:Name="mediaElement" Margin="-3,0,0,-3" >
-            <vlc:MediaElement.TransportControls>
-                <vlc:MediaTransportControls ControlPanelOpacity="1.0" x:Name="mediaTransportControls" >
-                    <Grid x:Name="titleGrid">
-                        <TextBlock x:Name="videoTitle" 
-                               HorizontalAlignment="Left" 
-                               Margin="236,136,0,0" 
-                               Text="VideoTitle" 
-                               TextWrapping="Wrap" 
-                               VerticalAlignment="Top" 
-                               Height="80" Width="400"
-                               FontSize="30"/>
-                        <TextBlock />
-                        <TextBlock x:Name="videoUploader" 
-                               HorizontalAlignment="Left" 
-                               Margin="236,236,0,0" 
-                               Text="VideoUploader" 
-                               TextWrapping="Wrap" 
-                               VerticalAlignment="Top" 
-                               Height="80" Width="400"
-                               FontSize="30"/>
-                        <TextBlock />
-                        <Image x:Name="videoThumbnail" 
-                               HorizontalAlignment="Left" 
-                               Height="100" Margin="124,189,0,0"
-                               VerticalAlignment="Top" 
-                               Width="100" RenderTransformOrigin="-5.42,0.166"/>
-
-                    </Grid>
-                </vlc:MediaTransportControls>
-            </vlc:MediaElement.TransportControls>
-        </vlc:MediaElement>
-
-    </Grid>
+    <RelativePanel x:Name="relativePanel" 
+          Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <MediaPlayerElement x:Name="mediaElement"
+                            AutoPlay="false"
+                            AreTransportControlsEnabled="True"
+                            RelativePanel.AlignRightWithPanel="True"
+                            RelativePanel.AlignTopWithPanel="True"
+                            Width="640" Height="360"
+                            />
+    </RelativePanel>
 </Page>

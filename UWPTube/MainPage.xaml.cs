@@ -1,9 +1,11 @@
 ﻿using System;
+using Windows.Media.Core;
+using Windows.Media.Playback;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 
-using YoutubeExplode;
+using UWPTube.Utils.Youtube;
+
 
 namespace UWPTube
 {
@@ -12,32 +14,20 @@ namespace UWPTube
         public MainPage()
         {
             this.InitializeComponent();
-            var client = new YoutubeClient();
 
-            string link = "https://www.youtube.com/watch?v=hCCtaw7URFA";
-            var id = YoutubeClient.ParseVideoId(link);
+            // Get data from Youtube
+            var client = new YoutubePuller();
+            VideoData videoInfo = client.GetVideoDataFromUrl("https://www.youtube.com/watch?v=hCCtaw7URFA");
 
-            var video = client.GetVideoAsync(id).Result;
-            videoTitle.Text = video.Title;
-            videoUploader.Text = video.Author;
-            videoThumbnail.Source = new BitmapImage(new Uri(video.Thumbnails.StandardResUrl));
-
-            var streamData = client.GetVideoMediaStreamInfosAsync(id).Result;
-            long bitrate = 0;
-            string stream = null;
-            foreach (var candidate in streamData.Audio)
-            {
-                if (candidate.Bitrate > bitrate)
-                {
-                    stream = candidate.Url;
-                    bitrate = candidate.Bitrate;
-                }
-            }
-            mediaElement.Source = stream;
-            mediaElement.Background = new ImageBrush {
-                ImageSource = new BitmapImage(new Uri(video.Thumbnails.MaxResUrl)),
-                Opacity = 0.5
-            };
-        }
+            // Set media element source and metadata
+            var playbackItem = new MediaPlaybackItem(MediaSource.CreateFromUri(new Uri(videoInfo.StreamUrl)));
+            var metadata = playbackItem.GetDisplayProperties();
+            metadata.Type = Windows.Media.MediaPlaybackType.Music;
+            metadata.MusicProperties.Title = videoInfo.Title;
+            metadata.MusicProperties.Artist = videoInfo.Uploader;
+            metadata.Thumbnail = RandomAccessStreamReference.CreateFromUri(new Uri(videoInfo.ThumbnailStandardUrl));
+            playbackItem.ApplyDisplayProperties(metadata);
+            mediaElement.Source = playbackItem;
+        } 
     }
 }
