@@ -14,13 +14,17 @@ namespace UWPTube
         public MainPage()
         {
             this.InitializeComponent();
+            this.Loaded += MainPage_Loaded;
+        }
 
+        private async void MainPage_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
             // Get data from Youtube
             var client = new YoutubePuller();
-            VideoMetadata metadata = client.GetVideoDataFromUrl("https://www.youtube.com/watch?v=vQJGlhWVaic").Result;
+            VideoMetadata metadata = await client.GetVideoMetadataFromUrl("https://www.youtube.com/watch?v=vQJGlhWVaic");
 
             // Get stream url to make playback item
-            string streamUrl = client.GetStreamUrl(metadata.ID).Result;
+            string streamUrl = await client.GetStreamUrl(metadata.ID);
             var playbackItem = new MediaPlaybackItem(MediaSource.CreateFromUri(new Uri(streamUrl)));
 
             // Add metadata to playback item

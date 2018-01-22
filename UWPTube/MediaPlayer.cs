@@ -8,6 +8,7 @@ namespace UWPTube.Utils.MediaPlayer
 {
     public class MetadataConfig
     {
+        // Adds specified metadata to the specified playback item
         public static void AddMetadata(VideoMetadata metadata, MediaPlaybackItem playbackItem)
         {
             var itemProps = playbackItem.GetDisplayProperties();

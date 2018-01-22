@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using MoreLinq;
 using YoutubeExplode;
 
 namespace UWPTube.Utils.Youtube
@@ -25,19 +26,19 @@ namespace UWPTube.Utils.Youtube
             client = new YoutubeClient();
         }
 
-        public async Task<VideoMetadata> GetVideoDataFromUrl(String url)
+        public async Task<VideoMetadata> GetVideoMetadataFromUrl(String url)
         {
             var id = YoutubeClient.ParseVideoId(url);
-            return await GetVideoData(id).ConfigureAwait(false);
+            return await GetVideoMetadata(id);
         }
 
-        public async Task<VideoMetadata> GetVideoData(string id)
+        public async Task<VideoMetadata> GetVideoMetadata(string id)
         {
             VideoMetadata data;
             data.ID = id;
 
-            // Populates struct with desired video data
-            var rawVideoData = await client.GetVideoAsync(id).ConfigureAwait(false);
+            // Populates struct with desired metadata
+            var rawVideoData = await client.GetVideoAsync(id);
             data.Title = rawVideoData.Title;
             data.Uploader = rawVideoData.Author;
             data.ThumbnailStandardUrl = rawVideoData.Thumbnails.StandardResUrl;
@@ -48,22 +49,9 @@ namespace UWPTube.Utils.Youtube
 
         public async Task<string> GetStreamUrl(string id)
         {
-            string url = null;
-            // Selects stream with highest bitrate
-            var streamData = await client.GetVideoMediaStreamInfosAsync(id).ConfigureAwait(false);
-            long bitrate = 0;
-            foreach (var candidate in streamData.Audio)
-            {
-                if (candidate.Bitrate > bitrate)
-                {
-                    url = candidate.Url;
-                    bitrate = candidate.Bitrate;
-                }
-            }
-
-            return url;
+            // Get a list of all the streams and return the one with the highest bitrate
+            var streamData = await client.GetVideoMediaStreamInfosAsync(id);
+            return streamData.Audio.MaxBy(stream => stream.Bitrate).Url;
         }
-
-
     }
 }
