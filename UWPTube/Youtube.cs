@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 using YoutubeExplode;
@@ -9,14 +6,14 @@ using YoutubeExplode;
 namespace UWPTube.Utils.Youtube
 {
 
-    struct VideoData
+    // Struct containing strings needed for playback, metadata
+    public struct VideoMetadata
     {
         public string Title;
+        public string ID;
         public string Uploader;
         public string ThumbnailStandardUrl;
         public string ThumbnailMaxUrl;
-
-        public string StreamUrl;
     }
 
     class YoutubePuller
@@ -28,34 +25,43 @@ namespace UWPTube.Utils.Youtube
             client = new YoutubeClient();
         }
 
-        public VideoData GetVideoDataFromUrl(String url)
+        public async Task<VideoMetadata> GetVideoDataFromUrl(String url)
         {
             var id = YoutubeClient.ParseVideoId(url);
-            return GetVideoData(id);
+            return await GetVideoData(id).ConfigureAwait(false);
         }
 
-        public VideoData GetVideoData(string id)
+        public async Task<VideoMetadata> GetVideoData(string id)
         {
-            VideoData data = new VideoData();
+            VideoMetadata data;
+            data.ID = id;
 
-            var rawVideoData = client.GetVideoAsync(id).Result;
+            // Populates struct with desired video data
+            var rawVideoData = await client.GetVideoAsync(id).ConfigureAwait(false);
             data.Title = rawVideoData.Title;
             data.Uploader = rawVideoData.Author;
             data.ThumbnailStandardUrl = rawVideoData.Thumbnails.StandardResUrl;
             data.ThumbnailMaxUrl = rawVideoData.Thumbnails.MaxResUrl;
 
-            var streamData = client.GetVideoMediaStreamInfosAsync(id).Result;
+            return data;
+        }
+
+        public async Task<string> GetStreamUrl(string id)
+        {
+            string url = null;
+            // Selects stream with highest bitrate
+            var streamData = await client.GetVideoMediaStreamInfosAsync(id).ConfigureAwait(false);
             long bitrate = 0;
             foreach (var candidate in streamData.Audio)
             {
                 if (candidate.Bitrate > bitrate)
                 {
-                    data.StreamUrl = candidate.Url;
+                    url = candidate.Url;
                     bitrate = candidate.Bitrate;
                 }
             }
 
-            return data;
+            return url;
         }
 
 
