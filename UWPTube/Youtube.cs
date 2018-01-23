@@ -49,7 +49,7 @@ namespace UWPTube.Utils.Youtube
             var rawVideoData = await client.GetVideoAsync(id);
             data.Title = rawVideoData.Title;
             data.Uploader = rawVideoData.Author;
-            data.ThumbnailStandardUrl = rawVideoData.Thumbnails.StandardResUrl;
+            data.ThumbnailStandardUrl = rawVideoData.Thumbnails.MediumResUrl;
             data.ThumbnailMaxUrl = rawVideoData.Thumbnails.MaxResUrl;
 
             return data;

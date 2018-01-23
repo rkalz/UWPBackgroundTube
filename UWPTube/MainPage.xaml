@@ -9,13 +9,36 @@
 
     <RelativePanel x:Name="relativePanel" 
           Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <MediaPlayerElement x:Name="MediaElement"
+        <RelativePanel 
+            HorizontalAlignment="Right"
+            RelativePanel.AlignRightWithPanel="True"
+            RelativePanel.AlignTopWithPanel="True"
+            RelativePanel.RightOf="SearchResults"
+            RelativePanel.Above="textBox">
+            <TextBlock x:Name="MusicTitle"
+                       RelativePanel.RightOf="MusicThumbnail"
+                       Text="MusicTitle"
+                       FontSize="50"
+                       TextWrapping="WrapWholeWords"
+                       Margin="0,150,0,0"
+                       />
+            <TextBlock x:Name="MusicUploader"
+                       Text="MusicUploader"
+                       FontSize="50"
+                       TextWrapping="WrapWholeWords"
+                       RelativePanel.RightOf="MusicThumbnail"
+                       RelativePanel.Below="MusicTitle"
+                       />
+            <Image x:Name="MusicThumbnail"
+                   Width="480" Height="270"
+                   Margin="75,75,0,0"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   />
+            <MediaPlayerElement x:Name="MediaElement"
                             AutoPlay="true"
-                            AreTransportControlsEnabled="True"
-                            RelativePanel.AlignRightWithPanel="True"
-                            RelativePanel.AlignTopWithPanel="True"
-                            Width="640" Height="360"
-                            />
+                            AreTransportControlsEnabled="True"/>
+        </RelativePanel>
         <AutoSuggestBox x:Name="SearchBox"
                         RelativePanel.AlignTopWithPanel="True"
                         Width="320"
@@ -24,11 +47,16 @@
                         QuerySubmitted="SearchBox_QuerySubmitted"
                         />
         <ListView x:Name="SearchResults"
+                  Background="Coral"
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignBottomWithPanel="True"
                   RelativePanel.AlignTopWith="SearchBox"
                   SelectionChanged="SearchResults_SelectionChanged"
                   Width="320" Margin="0,30,0,3"/>
-
+        <Grid x:Name="textBox" 
+              Height="200" 
+              RelativePanel.AlignRightWithPanel="True"
+              RelativePanel.AlignBottomWithPanel="True"
+              RelativePanel.RightOf="SearchResults" />
     </RelativePanel>
 </Page>
