@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace UWPTube
@@ -28,11 +18,13 @@ namespace UWPTube
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
 
-        bool _isInBackGroundMode = false;
+        bool _isInBackgroundMode = false;
 
         public App()
         {
             this.InitializeComponent();
+
+            // Taken from https://docs.microsoft.com/en-us/windows/uwp/audio-video-camera/background-audio
             this.Suspending += OnSuspending;
 
             this.EnteredBackground += App_EnteredBackground;
@@ -42,6 +34,7 @@ namespace UWPTube
             MemoryManager.AppMemoryUsageIncreased += MemoryManager_AppMemoryUsageIncreased;
         }
 
+        // Taken from https://docs.microsoft.com/en-us/windows/uwp/launch-resume/reduce-memory-usage
         private void MemoryManager_AppMemoryUsageIncreased(object sender, object e)
         {
             var level = MemoryManager.AppMemoryUsageLevel;
@@ -52,6 +45,7 @@ namespace UWPTube
             }
         }
 
+        // Taken from https://docs.microsoft.com/en-us/windows/uwp/launch-resume/reduce-memory-usage
         private void MemoryManager_AppMemoryUsageLimitChanging(object sender, AppMemoryUsageLimitChangingEventArgs e)
         {
             if (MemoryManager.AppMemoryUsage >= e.NewLimit)
@@ -60,23 +54,26 @@ namespace UWPTube
             }
         }
 
+        // Taken from https://docs.microsoft.com/en-us/windows/uwp/launch-resume/reduce-memory-usage
         private void ReduceMemoryUsage(ulong limit)
         {
-            if (_isInBackGroundMode && Window.Current.Content != null)
+            if (_isInBackgroundMode && Window.Current.Content != null)
             {
                 Window.Current.Content = null;
             }
             GC.Collect();
         }
 
+        // Taken from https://docs.microsoft.com/en-us/windows/uwp/audio-video-camera/background-audio
         private void App_EnteredBackground(object sender, EnteredBackgroundEventArgs e)
         {
-            this._isInBackGroundMode = true;
+            this._isInBackgroundMode = true;
         }
 
+        // Taken from https://docs.microsoft.com/en-us/windows/uwp/audio-video-camera/background-audio
         private void App_LeavingBackground(object sender, LeavingBackgroundEventArgs e)
         {
-            this._isInBackGroundMode = false;
+            this._isInBackgroundMode = false;
         }
 
         /// <summary>

@@ -14,14 +14,20 @@ namespace UWPTube
         public MainPage()
         {
             this.InitializeComponent();
-            this.Loaded += MainPage_Loaded;
         }
 
-        private async void MainPage_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private async void SearchBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
+        {
+            var client = new YoutubePuller();
+            var results = await client.GetSearchResults(SearchBox.Text);
+            SearchResults.ItemsSource = results;
+        }
+
+        private async void SearchResults_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Get data from Youtube
             var client = new YoutubePuller();
-            VideoMetadata metadata = await client.GetVideoMetadataFromUrl("https://www.youtube.com/watch?v=vQJGlhWVaic");
+            VideoMetadata metadata = await client.GetVideoMetadata(SearchResults.SelectedItem.ToString());
 
             // Get stream url to make playback item
             string streamUrl = await client.GetStreamUrl(metadata.ID);
@@ -31,7 +37,7 @@ namespace UWPTube
             MetadataConfig.AddMetadata(metadata, playbackItem);
 
             // Set media source to playback item
-            mediaElement.Source = playbackItem;
+            MediaElement.Source = playbackItem;
         }
     }
 }

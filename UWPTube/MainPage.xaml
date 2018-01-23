@@ -9,12 +9,26 @@
 
     <RelativePanel x:Name="relativePanel" 
           Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <MediaPlayerElement x:Name="mediaElement"
-                            AutoPlay="false"
+        <MediaPlayerElement x:Name="MediaElement"
+                            AutoPlay="true"
                             AreTransportControlsEnabled="True"
                             RelativePanel.AlignRightWithPanel="True"
                             RelativePanel.AlignTopWithPanel="True"
                             Width="640" Height="360"
                             />
+        <AutoSuggestBox x:Name="SearchBox"
+                        RelativePanel.AlignTopWithPanel="True"
+                        Width="320"
+                        QueryIcon="Find"
+                        PlaceholderText="Search for videos..."
+                        QuerySubmitted="SearchBox_QuerySubmitted"
+                        />
+        <ListView x:Name="SearchResults"
+                  RelativePanel.AlignLeftWithPanel="True"
+                  RelativePanel.AlignBottomWithPanel="True"
+                  RelativePanel.AlignTopWith="SearchBox"
+                  SelectionChanged="SearchResults_SelectionChanged"
+                  Width="320" Margin="0,30,0,3"/>
+
     </RelativePanel>
 </Page>
